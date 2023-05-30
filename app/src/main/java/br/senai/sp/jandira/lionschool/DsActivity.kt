@@ -1,7 +1,7 @@
 package br.senai.sp.jandira.lionschool
 
 import android.os.Bundle
-import android.widget.Space
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -10,10 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,15 +20,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.sp.jandira.lionschool.model.AlunosLista
+import br.senai.sp.jandira.lionschool.model.Alunos
+import br.senai.sp.jandira.lionschool.model.Curso
 import br.senai.sp.jandira.lionschool.model.CursoLista
-import br.senai.sp.jandira.lionschool.ui.theme.LionSchoolTheme
 import br.senai.sp.jandira.lionschool.service.RetrofitFactory
-import retrofit2.Callback
+import br.senai.sp.jandira.lionschool.ui.theme.LionSchoolTheme
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import br.senai.sp.jandira.lionschool.model.AlunosLista as AlunosLista
 
-class MainActivity : ComponentActivity() {
+class DsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -49,42 +49,28 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-
-    var cursos by remember {
-        mutableStateOf(listOf<br.senai.sp.jandira.lionschool.model.Curso>())
-    }
-
+fun Greeting2(name: String) {
     var alunos by remember {
         mutableStateOf(listOf<br.senai.sp.jandira.lionschool.model.Alunos>())
     }
-    val call = RetrofitFactory().getCursosService().getCursos()
 
-    call.enqueue(object : Callback<CursoLista> {
+    val call = RetrofitFactory().getAlunosService().getAlunos("DS")
+
+    call.enqueue(object : Callback<AlunosLista> {
         override fun onResponse(
-            call: Call<CursoLista>,
-            response: Response<CursoLista>
-
-        ) {
-            cursos = response.body()!!.cursos
-
+            call: Call<AlunosLista>,
+            response: Response<AlunosLista>) {
+           alunos = response.body()!!.alunos
         }
 
-        override fun onFailure(call: Call<CursoLista>, t: Throwable) {
+        override fun onFailure(call: Call<AlunosLista>, t: Throwable) {
             TODO("Not yet implemented")
         }
-
     })
 
 
+    Column(modifier = Modifier.fillMaxSize()) {
 
-
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-//HEADER
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -116,35 +102,72 @@ fun Greeting(name: String) {
                 }
             }
         }
-//HEADER
 
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(0.dp, 30.dp, 0.dp, 0.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
         ) {
-            Row(Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp)) {
-                Text(text = "Olá", fontWeight = FontWeight.Bold, fontSize = 50.sp)
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = "Professor",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 50.sp,
-                    color = Color(53, 93, 233)
+            Card(
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(40.dp),
+                backgroundColor = Color(53, 93, 233),
+                shape = RoundedCornerShape(
+                    bottomStart = 20.dp,
+                    bottomEnd = 20.dp,
+                    topStart = 20.dp,
+                    topEnd = 20.dp
                 )
+            ) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Finalizado",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+            }
+            Card(
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(40.dp),
+                backgroundColor = Color(210, 178, 9),
+                shape = RoundedCornerShape(
+                    bottomStart = 20.dp,
+                    bottomEnd = 20.dp,
+                    topStart = 20.dp,
+                    topEnd = 20.dp
+                )
+            ) {
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Cursando",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
             }
 
-            Card(
-                Modifier
-                    .width(200.dp)
-                    .height(3.dp), backgroundColor = Color(249, 210, 5)
-            ) {
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            LazyColumn() {
-                items(cursos) {
+        }
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(Modifier.fillMaxSize()) {
+                items(alunos) {
+
                     Card(
                         Modifier
                             .width(200.dp)
@@ -157,7 +180,7 @@ fun Greeting(name: String) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = it.sigla,
+                                text = "${it.nome}",
                                 fontSize = 64.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color.White
@@ -167,24 +190,20 @@ fun Greeting(name: String) {
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(72.dp))
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp),
-                backgroundColor = Color(53, 93, 233),
-                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-            ) { }
         }
 
     }
+
+}
+
+fun <T> Call<T>.enqueue(callback: Callback<AlunosLista>) {
+
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun DefaultPreview2() {
     LionSchoolTheme {
-        Greeting("Android")
+        Greeting2("Android")
     }
 }
