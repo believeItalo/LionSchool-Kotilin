@@ -14,6 +14,5 @@ interface CursosService {
 
     @GET("cursos")
     fun getCursos(): Call<CursoLista>
-    @GET("alunos")
-    fun getAlunos(@Query("alunos") alunos: String): Call<Alunos>
+
 }

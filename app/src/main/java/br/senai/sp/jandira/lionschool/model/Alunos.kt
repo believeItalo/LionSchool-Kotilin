@@ -1,8 +1,9 @@
 package br.senai.sp.jandira.lionschool.model
 
 data class Alunos(
-    val foto: Int,
-    val nome: Int,
+    val foto:String,
+    val nome:String,
     val matricula:String,
-    val sexo: String
+    val sexo:String,
+    val status:String
 )

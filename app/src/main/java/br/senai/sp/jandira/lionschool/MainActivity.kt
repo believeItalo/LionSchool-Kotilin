@@ -1,11 +1,13 @@
 package br.senai.sp.jandira.lionschool
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting2("Android")
+                    Greeting("Android")
                 }
             }
         }
@@ -50,6 +53,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String) {
+    val context = LocalContext.current
 
     var cursos by remember {
         mutableStateOf(listOf<br.senai.sp.jandira.lionschool.model.Curso>())
@@ -149,13 +153,25 @@ fun Greeting(name: String) {
                         Modifier
                             .width(200.dp)
                             .height(200.dp)
+                            .clickable {
+                                if (it.sigla == "DS"){
+                                val intent = Intent(context, DsActivity::class.java)
+                                context.startActivity(intent)
+                                }
+                                else{
+                                    val intent = Intent(context, RdsActivity::class.java)
+                                    context.startActivity(intent)
+                                }
+                            }
                             .padding(0.dp, 25.dp, 0.dp, 0.dp), backgroundColor = Color(53, 93, 233)
+
                     ) {
                         Column(
                             Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+
                             Text(
                                 text = it.sigla,
                                 fontSize = 64.sp,

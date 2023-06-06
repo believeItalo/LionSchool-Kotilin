@@ -1,41 +1,37 @@
 package br.senai.sp.jandira.lionschool
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.lionschool.model.Alunos
-import br.senai.sp.jandira.lionschool.model.Curso
-import br.senai.sp.jandira.lionschool.model.CursoLista
+import br.senai.sp.jandira.lionschool.model.AlunosLista
 import br.senai.sp.jandira.lionschool.service.RetrofitFactory
-import br.senai.sp.jandira.lionschool.ui.theme.LionSchoolTheme
+import br.senai.sp.jandira.lionschool.ui.theme.ui.theme.LionSchoolTheme
 import coil.compose.AsyncImage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
-import br.senai.sp.jandira.lionschool.model.AlunosLista as AlunosLista
 
-class DsActivity : ComponentActivity() {
+class RdsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -45,7 +41,7 @@ class DsActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting2("Android")
+                    Greeting3("Android")
                 }
             }
         }
@@ -53,39 +49,18 @@ class DsActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting2(name: String) {
-    val context = LocalContext.current
-    val callAlunos = RetrofitFactory().getAlunosService().getCurso("Ds")
-
+fun Greeting3(name: String) {
+    val callAlunos = RetrofitFactory().getAlunosService().getCurso("Rds")
 
     var alunos by remember {
-        mutableStateOf(listOf<br.senai.sp.jandira.lionschool.model.Alunos>())
+        mutableStateOf(listOf<Alunos>())
     }
-
-    val callStatusFinalizado = RetrofitFactory().getAlunosService().getStatusCurso("finalizado","DS")
-
-    callStatusFinalizado.enqueue(object : Callback<AlunosLista>{
-        override fun onResponse(
-            call: Call<AlunosLista>,
-            response: Response<AlunosLista>
-        ) {
-            alunos = response.body()!!.alunos;
-        }
-
-        override fun onFailure(call: Call<AlunosLista>, t: Throwable) {
-            Log.i(
-                "ds2m",
-                "onFailure: ${t.message}"
-            )
-        }
-    })
 
     callAlunos.enqueue(object : Callback<AlunosLista> {
         override fun onResponse(
             call: Call<AlunosLista>,
             response: Response<AlunosLista>
         ) {
-            //Duas exclamações seignificam que pode vir nulo
             alunos = response.body()!!.alunos;
         }
 
@@ -136,7 +111,6 @@ fun Greeting2(name: String) {
             modifier = Modifier
                 .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
         ) {
-
             Card(
                 modifier = Modifier
                     .width(100.dp)
@@ -158,9 +132,8 @@ fun Greeting2(name: String) {
                         text = "Finalizado",
                         color = Color.White,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.SemiBold
                     )
-
                 }
 
             }
@@ -187,7 +160,6 @@ fun Greeting2(name: String) {
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
-
                     )
                 }
 
@@ -201,12 +173,12 @@ fun Greeting2(name: String) {
                     .fillMaxSize()
                     .padding(20.dp)) {
                 items(alunos) {
+
                     Card(
                         Modifier
                             .width(500.dp)
                             .height(200.dp)
                             .padding(0.dp, 25.dp, 0.dp, 0.dp), backgroundColor = Color(53, 93, 233)
-
                     ) {
                         Column(
                             Modifier.fillMaxSize(),
@@ -225,13 +197,11 @@ fun Greeting2(name: String) {
                                     )
                                     Text(
                                         modifier = Modifier.padding(0.dp,10.dp),
-                                        text = "Número Matrícula: ${it.matricula}",
+                                        text = "Número Matrícula ${it.matricula}",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.White
-
                                     )
-
                                 }
 
                             }
@@ -249,8 +219,8 @@ fun Greeting2(name: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview2() {
+fun DefaultPreview3() {
     LionSchoolTheme {
-        Greeting2("Android")
+        Greeting3("Android")
     }
 }
